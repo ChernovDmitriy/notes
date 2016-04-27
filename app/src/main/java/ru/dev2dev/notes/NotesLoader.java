@@ -5,6 +5,8 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.ArrayList;
 
+import ru.dev2dev.notes.data.NotesDbHelper;
+
 /**
  * Created by Dmitriy on 22.04.2016.
  */

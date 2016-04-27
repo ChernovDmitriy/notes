@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
 
+import ru.dev2dev.notes.data.NoteContentProvider;
+
 /**
  * Created by Dmitriy on 22.04.2016.
  */

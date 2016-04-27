@@ -1,14 +1,15 @@
-package ru.dev2dev.notes;
+package ru.dev2dev.notes.data;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+
+import ru.dev2dev.notes.Note;
 
 /**
  * Created by Dmitriy on 21.04.2016.
@@ -25,7 +26,7 @@ public class NotesDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+Note.NOTE+"("+
+        db.execSQL("CREATE TABLE "+ Note.NOTE+"("+
                 Note.ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
                 Note.TITLE+", "+
                 Note.DESCRIPTION+", "+

@@ -1,4 +1,4 @@
-package ru.dev2dev.notes;
+package ru.dev2dev.notes.data;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -15,6 +15,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import ru.dev2dev.notes.Note;
+
 /**
  * Created by Dmitriy on 22.04.2016.
  */
@@ -25,7 +27,7 @@ public class NoteContentProvider extends ContentProvider {
     static final String DB_NAME = "noteDB";
     static final int DB_VERSION = 1;
 
-    static final String DB_CREATE = "CREATE TABLE "+Note.NOTE+"("+
+    static final String DB_CREATE = "CREATE TABLE "+ Note.NOTE+"("+
             Note.ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
             Note.TITLE+", "+
             Note.DESCRIPTION+", "+

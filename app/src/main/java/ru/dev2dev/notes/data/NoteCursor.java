@@ -1,7 +1,9 @@
-package ru.dev2dev.notes;
+package ru.dev2dev.notes.data;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+
+import ru.dev2dev.notes.Note;
 
 /**
  * Created by Dmitriy on 22.04.2016.

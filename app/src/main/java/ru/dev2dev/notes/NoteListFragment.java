@@ -1,7 +1,6 @@
 package ru.dev2dev.notes;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+
+import ru.dev2dev.notes.data.NotesDbHelper;
 
 /**
  * Created by Dmitriy on 22.04.2016.
