@@ -6,23 +6,13 @@ import java.io.Serializable;
  * Created by Dmitriy on 21.04.2016.
  */
 public class Note implements Serializable {
-
-    public static final String NOTE = "note";
-    public static final String ID = "_id";
-    public static final String TITLE = "title";
-    public static final String DESCRIPTION = "description";
-    public static final String IMAGE_PATH= "image_path";
-    public static final String DATE = "date";
-
     private long id;
     private String title;
     private String description;
     private String imagePath;
     private String date;
 
-    public Note() {
-
-    }
+    public Note() {}
 
     public Note(long id, String title, String description, String imagePath, String date) {
         this.id = id;

@@ -1,5 +1,6 @@
-package ru.dev2dev.notes;
+package ru.dev2dev.notes.adapters;
 
+import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,28 +8,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import ru.dev2dev.notes.Note;
+import ru.dev2dev.notes.R;
+import ru.dev2dev.notes.data.NoteCursor;
 
 /**
  * Created by Dmitriy on 22.04.2016.
  */
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+public class NoteAdapter extends RecyclerViewCursorAdapter<NoteAdapter.ViewHolder> {
+    private OnCardViewClickListener cardViewClickListener;
 
-    private ArrayList<Note> notes;
-
-
-    public interface onCardViewClickListener {
+    public interface OnCardViewClickListener {
         void onCardViewClick(Note note);
     }
 
-    private onCardViewClickListener cardViewClickListener;
-
-    public void setCardViewClickListener(onCardViewClickListener cardViewClickListener) {
-        this.cardViewClickListener = cardViewClickListener;
+    public NoteAdapter(OnCardViewClickListener listener) {
+        cardViewClickListener = listener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
         CardView cardView;
         TextView titleTextView;
         TextView descriptionTextView;
@@ -43,10 +41,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         }
     }
 
-    public NoteAdapter(ArrayList<Note> notes) {
-        this.notes = notes;
-    }
-
     @Override
     public NoteAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
@@ -56,8 +50,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final Note note = notes.get(position);
+    public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
+        NoteCursor noteCursor = new NoteCursor(cursor);
+        final Note note = noteCursor.getNote();
 
         holder.titleTextView.setText(note.getTitle());
         holder.descriptionTextView.setText(note.getDescription());
@@ -71,11 +66,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
                 }
             }
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return notes.size();
     }
 }
 

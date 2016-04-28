@@ -1,10 +1,13 @@
 package ru.dev2dev.notes;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,38 +16,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
-import ru.dev2dev.notes.data.NotesDbHelper;
+import ru.dev2dev.notes.adapters.NoteAdapter;
+import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
 /**
  * Created by Dmitriy on 22.04.2016.
  */
-public class NoteListFragment extends Fragment {
-
+public class NoteListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private final String TAG = this.getClass().getSimpleName();
-    private RecyclerView recyclerView;
-
     private static final int NOTES_LOADER_ID = 1;
 
-    NotesDbHelper dbHelper;
+    private RecyclerView recyclerView;
+    private NoteAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_note_list, container, false);
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(NOTES_LOADER_ID, null, new NotesLoaderCallbacks());
+        return inflater.inflate(R.layout.fragment_note_list, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dbHelper = new NotesDbHelper(getActivity());
 
         final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +48,8 @@ public class NoteListFragment extends Fragment {
         fab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                dbHelper.deleteNotes();
+                Uri uri = NoteEntry.buildNotesUri();
+                getActivity().getContentResolver().delete(uri, null, null);
                 Snackbar.make(v, "delete all notes", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 return false;
@@ -67,36 +60,55 @@ public class NoteListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    private void updateUI(ArrayList<Note> notes) {
-
-        NoteAdapter noteAdapter = new NoteAdapter(notes);
-        noteAdapter.setCardViewClickListener(new NoteAdapter.onCardViewClickListener() {
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        adapter = new NoteAdapter(new NoteAdapter.OnCardViewClickListener() {
             @Override
             public void onCardViewClick(Note note) {
                 openDialog(note);
             }
         });
+        recyclerView.setAdapter(adapter);
 
-        recyclerView.setAdapter(noteAdapter);
-
-//        getLoaderManager().destroyLoader(NOTES_LOADER_ID);
+        getLoaderManager().initLoader(NOTES_LOADER_ID, null, this);
     }
 
-    private class NotesLoaderCallbacks implements LoaderManager.LoaderCallbacks<ArrayList<Note>> {
-
-        @Override
-        public Loader<ArrayList<Note>> onCreateLoader(int id, Bundle args) {
-            return new NotesLoader(getActivity());
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case NOTES_LOADER_ID:
+                Uri notesUri = NoteEntry.buildNotesUri();
+                String[] projection = {NoteEntry._ID,
+                        NoteEntry.COLUMN_TITLE,
+                        NoteEntry.COLUMN_DESCRIPTION,
+                        NoteEntry.COLUMN_IMAGE_PATH,
+                        NoteEntry.COLUMN_DATE};
+                return new CursorLoader(getContext(),
+                        notesUri,
+                        projection,
+                        null,
+                        null,
+                        null);
         }
+        return null;
+    }
 
-        @Override
-        public void onLoadFinished(Loader<ArrayList<Note>> loader, ArrayList<Note> notes) {
-            updateUI(notes);
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()) {
+            case NOTES_LOADER_ID:
+                adapter.swapCursor(data);
+                break;
         }
+    }
 
-        @Override
-        public void onLoaderReset(Loader<ArrayList<Note>> loader) {
-
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch (loader.getId()) {
+            case NOTES_LOADER_ID:
+                adapter.swapCursor(null);
+                break;
         }
     }
 
