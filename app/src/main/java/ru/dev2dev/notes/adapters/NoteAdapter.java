@@ -15,7 +15,28 @@ import ru.dev2dev.notes.data.NoteCursor;
 /**
  * Created by Dmitriy on 22.04.2016.
  */
-public class NoteAdapter extends RecyclerViewCursorAdapter<NoteAdapter.ViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+
+    private Cursor cursor;
+
+//    public Cursor getCursor() {
+//        return cursor;
+//    }
+
+    public void swapCursor(final Cursor cursor) {
+        this.cursor = cursor;
+        notifyDataSetChanged();
+    }
+
+    public Cursor getItem(final int position) {
+        if (this.cursor != null && !this.cursor.isClosed()) {
+            this.cursor.moveToPosition(position);
+        }
+
+        return this.cursor;
+    }
+
+
     private OnCardViewClickListener cardViewClickListener;
 
     public interface OnCardViewClickListener {
@@ -50,8 +71,11 @@ public class NoteAdapter extends RecyclerViewCursorAdapter<NoteAdapter.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-        NoteCursor noteCursor = new NoteCursor(cursor);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        Cursor item = getItem(position);
+        NoteCursor noteCursor = new NoteCursor(item);
+
         final Note note = noteCursor.getNote();
 
         holder.titleTextView.setText(note.getTitle());
@@ -67,5 +91,11 @@ public class NoteAdapter extends RecyclerViewCursorAdapter<NoteAdapter.ViewHolde
             }
         });
     }
+
+    @Override
+    public int getItemCount() {
+        return this.cursor != null ? this.cursor.getCount() : 0;
+    }
+
 }
 

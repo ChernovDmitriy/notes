@@ -15,7 +15,7 @@ public class NotesContract {
 
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_DESCRIPTION = "description";
-        public static final String COLUMN_IMAGE_PATH= "image_path";
+        public static final String COLUMN_IMAGE_PATH = "image_path";
         public static final String COLUMN_DATE = "date";
 
         public static final Uri CONTENT_URI =

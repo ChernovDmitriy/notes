@@ -1,5 +1,6 @@
 package ru.dev2dev.notes;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +25,7 @@ import ru.dev2dev.notes.data.NotesContract.NoteEntry;
  * Created by Dmitriy on 22.04.2016.
  */
 public class NoteListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private final String TAG = this.getClass().getSimpleName();
+
     private static final int NOTES_LOADER_ID = 1;
 
     private RecyclerView recyclerView;
@@ -113,7 +115,6 @@ public class NoteListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void openDialog(Note note) {
-        Log.d(TAG, "openDialog: note is "+note);
         Bundle bundle = new Bundle();
         bundle.putSerializable(NoteEditFragment.NOTE_EXTRA, note);
 

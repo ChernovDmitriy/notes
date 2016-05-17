@@ -28,7 +28,6 @@ public class NoteEditFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        Log.d("mytag", "onCreateDialog: note is "+getArguments().getSerializable(NOTE_EXTRA));
         if (getArguments().getSerializable(NOTE_EXTRA)!= null) {
             note = (Note) getArguments().getSerializable(NOTE_EXTRA);
         } else {
@@ -57,12 +56,16 @@ public class NoteEditFragment extends DialogFragment {
                         //save it to DB
                         save(note);
 
-                        //return updated note
-                        Intent intent = new Intent();
-                        intent.putExtra(NOTE_EXTRA, note);
-                        onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-
                         dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (note.getId()!=0) {
+                            Uri uri = NoteEntry.buildNoteUri(note.getId());
+                            getActivity().getContentResolver().delete(uri, null, null);
+                        }
                     }
                 })
                 .create();
