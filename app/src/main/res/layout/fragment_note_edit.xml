@@ -43,35 +43,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView"
-                android:layout_gravity="center_horizontal" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/load_an_image"
-                android:id="@+id/load_image_button"
-                android:layout_gravity="left|center_horizontal"
-                android:layout_margin="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/date"
-                android:id="@+id/textView"
-                android:layout_margin="8dp" />
-
-            <DatePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/datePicker"
-                android:layout_gravity="center_horizontal"
-                android:datePickerMode="spinner"
-                android:calendarViewShown="false" />
         </LinearLayout>
     </ScrollView>
 

@@ -19,23 +19,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     private Cursor cursor;
 
-//    public Cursor getCursor() {
-//        return cursor;
-//    }
-
     public void swapCursor(final Cursor cursor) {
         this.cursor = cursor;
         notifyDataSetChanged();
     }
 
     public Cursor getItem(final int position) {
-        if (this.cursor != null && !this.cursor.isClosed()) {
-            this.cursor.moveToPosition(position);
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.moveToPosition(position);
         }
-
-        return this.cursor;
+        return cursor;
     }
-
 
     private OnCardViewClickListener cardViewClickListener;
 
@@ -51,14 +45,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         CardView cardView;
         TextView titleTextView;
         TextView descriptionTextView;
-        TextView dateTextView;
 
         public ViewHolder(View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.cardview);
             titleTextView = (TextView) view.findViewById(R.id.title);
             descriptionTextView = (TextView) view.findViewById(R.id.description);
-            dateTextView = (TextView) view.findViewById(R.id.date);
         }
     }
 
@@ -80,7 +72,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
         holder.titleTextView.setText(note.getTitle());
         holder.descriptionTextView.setText(note.getDescription());
-        holder.dateTextView.setText(note.getDate());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +85,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return this.cursor != null ? this.cursor.getCount() : 0;
+        return cursor != null ? cursor.getCount() : 0;
     }
 
 }

@@ -1,6 +1,5 @@
 package ru.dev2dev.notes;
 
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,10 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +18,6 @@ import android.view.ViewGroup;
 import ru.dev2dev.notes.adapters.NoteAdapter;
 import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
-/**
- * Created by Dmitriy on 22.04.2016.
- */
 public class NoteListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int NOTES_LOADER_ID = 1;
@@ -44,17 +38,7 @@ public class NoteListFragment extends Fragment implements LoaderManager.LoaderCa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openDialog(null);
-            }
-        });
-        fab.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Uri uri = NoteEntry.buildNotesUri();
-                getActivity().getContentResolver().delete(uri, null, null);
-                Snackbar.make(v, "delete all notes", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                return false;
+                openDialog(new Note());
             }
         });
 
@@ -81,11 +65,11 @@ public class NoteListFragment extends Fragment implements LoaderManager.LoaderCa
         switch (id) {
             case NOTES_LOADER_ID:
                 Uri notesUri = NoteEntry.buildNotesUri();
-                String[] projection = {NoteEntry._ID,
+                String[] projection = {
+                        NoteEntry._ID,
                         NoteEntry.COLUMN_TITLE,
-                        NoteEntry.COLUMN_DESCRIPTION,
-                        NoteEntry.COLUMN_IMAGE_PATH,
-                        NoteEntry.COLUMN_DATE};
+                        NoteEntry.COLUMN_DESCRIPTION
+                };
                 return new CursorLoader(getContext(),
                         notesUri,
                         projection,

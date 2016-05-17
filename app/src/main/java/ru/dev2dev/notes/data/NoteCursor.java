@@ -22,9 +22,7 @@ public class NoteCursor extends CursorWrapper {
         long id = getLong(getColumnIndex(NoteEntry._ID));
         String title = getString(getColumnIndex(NoteEntry.COLUMN_TITLE));
         String description = getString(getColumnIndex(NoteEntry.COLUMN_DESCRIPTION));
-        String imagePath = getString(getColumnIndex(NoteEntry.COLUMN_IMAGE_PATH));
-        String date = getString(getColumnIndex(NoteEntry.COLUMN_DATE));
 
-        return new Note(id, title, description, imagePath, date);
+        return new Note(id, title, description);
     }
 }
