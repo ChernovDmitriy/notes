@@ -107,4 +107,5 @@ public class NoteListFragment extends Fragment implements LoaderManager.LoaderCa
 
         fragment.show(getFragmentManager(), "note");
     }
+
 }

@@ -3,7 +3,6 @@ package ru.dev2dev.notes;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import ru.dev2dev.notes.data.NoteAsyncHandler;
 import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
 public class NoteEditFragment extends DialogFragment {
@@ -18,10 +18,13 @@ public class NoteEditFragment extends DialogFragment {
 
     private Note note;
 
+    private NoteAsyncHandler noteAsyncHandler;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         note = (Note) getArguments().getSerializable(NOTE_EXTRA);
+        noteAsyncHandler = new NoteAsyncHandler(getActivity().getContentResolver());
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_note_edit, null);
         final EditText titleText = (EditText) view.findViewById(R.id.titleText);
@@ -36,14 +39,11 @@ public class NoteEditFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         //update note
                         note.setTitle(titleText.getText().toString());
                         note.setDescription(descText.getText().toString());
-
                         //save it to DB
                         save(note);
-
                         dismiss();
                     }
                 });
@@ -53,8 +53,7 @@ public class NoteEditFragment extends DialogFragment {
             builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Uri uri = NoteEntry.buildNoteUri(note.getId());
-                    getActivity().getContentResolver().delete(uri, null, null);
+                    noteAsyncHandler.delete(note);
                 }
             });
         }
@@ -69,11 +68,9 @@ public class NoteEditFragment extends DialogFragment {
 
         long id = note.getId();
         if (id != 0) {
-            Uri uri = NoteEntry.buildNoteUri(id);
-            getActivity().getContentResolver().update(uri, noteValues, null, null);
+            noteAsyncHandler.update(note);
         } else {
-            Uri uri = NoteEntry.buildNotesUri();
-            getActivity().getContentResolver().insert(uri, noteValues);
+            noteAsyncHandler.insert(note);
         }
     }
 }

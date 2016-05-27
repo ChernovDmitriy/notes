@@ -1,6 +1,10 @@
 package ru.dev2dev.notes;
 
+import android.content.ContentValues;
+
 import java.io.Serializable;
+
+import ru.dev2dev.notes.data.NotesContract;
 
 /**
  * Created by Dmitriy on 21.04.2016.
@@ -48,6 +52,13 @@ public class Note implements Serializable {
     @Override
     public String toString() {
         return "note: id = "+this.getId()+", name = "+this.title;
+    }
+
+    public ContentValues getContentValues() {
+        ContentValues noteValues = new ContentValues();
+        noteValues.put(NotesContract.NoteEntry.COLUMN_TITLE, this.title);
+        noteValues.put(NotesContract.NoteEntry.COLUMN_DESCRIPTION, this.description);
+        return noteValues;
     }
 
 }
