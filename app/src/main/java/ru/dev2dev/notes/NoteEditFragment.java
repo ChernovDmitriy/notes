@@ -1,8 +1,11 @@
 package ru.dev2dev.notes;
 
 import android.app.Dialog;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -10,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import ru.dev2dev.notes.data.NoteAsyncHandler;
+import ru.dev2dev.notes.data.NotesContract;
 import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
 public class NoteEditFragment extends DialogFragment {
@@ -27,8 +30,8 @@ public class NoteEditFragment extends DialogFragment {
         noteAsyncHandler = new NoteAsyncHandler(getActivity().getContentResolver());
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_note_edit, null);
-        final EditText titleText = (EditText) view.findViewById(R.id.titleText);
-        final EditText descText = (EditText) view.findViewById(R.id.descText);
+        final EditText titleText = (EditText) view.findViewById(R.id.title_et);
+        final EditText descText = (EditText) view.findViewById(R.id.description_et);
 
         titleText.setText(note.getTitle());
         descText.setText(note.getDescription());
@@ -73,4 +76,27 @@ public class NoteEditFragment extends DialogFragment {
             noteAsyncHandler.insert(note);
         }
     }
+
+    private static class NoteAsyncHandler extends AsyncQueryHandler {
+
+        public NoteAsyncHandler(ContentResolver cr) {
+            super(cr);
+        }
+
+        public void update(Note note) {
+            Uri uri = NotesContract.NoteEntry.buildNoteUri(note.getId());
+            startUpdate(0, null, uri, note.getContentValues(), null, null);
+        }
+
+        public void insert(Note note) {
+            Uri uri = NotesContract.NoteEntry.buildNotesUri();
+            startInsert(0, null, uri, note.getContentValues());
+        }
+
+        public void delete(Note note) {
+            Uri uri = NotesContract.NoteEntry.buildNoteUri(note.getId());
+            startDelete(0, null, uri, null, null);
+        }
+    }
+
 }

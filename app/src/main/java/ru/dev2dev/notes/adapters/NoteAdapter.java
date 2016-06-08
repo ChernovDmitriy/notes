@@ -19,12 +19,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     private Cursor cursor;
 
-    public void swapCursor(final Cursor cursor) {
+    public void swapCursor(Cursor cursor) {
         this.cursor = cursor;
         notifyDataSetChanged();
     }
 
-    public Cursor getItem(final int position) {
+    public Cursor getItem(int position) {
         if (cursor != null && !cursor.isClosed()) {
             cursor.moveToPosition(position);
         }
@@ -66,9 +66,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         Cursor item = getItem(position);
-        NoteCursor noteCursor = new NoteCursor(item);
 
-        final Note note = noteCursor.getNote();
+        final Note note = new NoteCursor(item).getNote();
 
         holder.titleTextView.setText(note.getTitle());
         holder.descriptionTextView.setText(note.getDescription());
@@ -76,9 +75,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cardViewClickListener!=null) {
-                    cardViewClickListener.onCardViewClick(note);
-                }
+                cardViewClickListener.onCardViewClick(note);
             }
         });
     }
