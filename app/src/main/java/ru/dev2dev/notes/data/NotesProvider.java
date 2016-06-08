@@ -35,12 +35,15 @@ public class NotesProvider extends ContentProvider {
         return true;
     }
 
+    // чтение
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         Log.d(TAG, "query, " + uri.toString());
+        // проверяем Uri
         switch (uriMatcher.match(uri)) {
             case NOTES:
                 Log.d(TAG, "NOTES");
+                // если сортировка не указана, ставим свою - по имени
                 if (TextUtils.isEmpty(sortOrder)) {
                     sortOrder = NoteEntry._ID + " ASC";
                 }
@@ -49,6 +52,7 @@ public class NotesProvider extends ContentProvider {
             case NOTE:
                 String id = uri.getLastPathSegment();
                 Log.d(TAG, "NOTE, " + id);
+                // добавляем ID к условию выборки
                 if (TextUtils.isEmpty(selection)) {
                     selection = NoteEntry._ID + " = ?";
                 } else {
@@ -69,18 +73,19 @@ public class NotesProvider extends ContentProvider {
                 null,
                 sortOrder
         );
+        // просим ContentResolver уведомлять этот курсор
+        // об изменениях данных в CONTACT_CONTENT_URI
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
     public Uri insert(Uri uri, ContentValues values) {
         Log.d(TAG, "insert, " + uri.toString());
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
         Uri resultUri;
 
         switch (uriMatcher.match(uri)) {
             case NOTES:
-                long noteID = db.insert(NoteEntry.TABLE_NAME, null, values);
+                long noteID = dbHelper.getWritableDatabase().insert(NoteEntry.TABLE_NAME, null, values);
                 if (noteID > 0) {
                     resultUri = NoteEntry.buildNoteUri(noteID);
                 }
@@ -92,14 +97,13 @@ public class NotesProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown URI: " + uri);
         }
-
+        // уведомляем ContentResolver, что данные по адресу resultUri изменились
         getContext().getContentResolver().notifyChange(resultUri, null);
         return resultUri;
     }
 
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         Log.d(TAG, "delete, " + uri.toString());
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
             case NOTES:
@@ -109,7 +113,7 @@ public class NotesProvider extends ContentProvider {
             case NOTE:
                 String id = uri.getLastPathSegment();
                 Log.d(TAG, "NOTE, " + id);
-
+                // добавляем ID к условию выборки
                 if (TextUtils.isEmpty(selection)) {
                     selection = NoteEntry._ID + " = ?";
                 } else {
@@ -121,7 +125,7 @@ public class NotesProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown URI: " + uri);
         }
-        int deletedRows = db.delete(NoteEntry.TABLE_NAME, selection, selectionArgs);
+        int deletedRows = dbHelper.getWritableDatabase().delete(NoteEntry.TABLE_NAME, selection, selectionArgs);
         if (deletedRows != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
@@ -129,7 +133,6 @@ public class NotesProvider extends ContentProvider {
     }
 
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         Log.d(TAG, "update, " + uri.toString());
         switch (uriMatcher.match(uri)) {
@@ -151,7 +154,7 @@ public class NotesProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown URI: " + uri);
         }
-        int updatedRows = db.update(NoteEntry.TABLE_NAME, values, selection, selectionArgs);
+        int updatedRows = dbHelper.getWritableDatabase().update(NoteEntry.TABLE_NAME, values, selection, selectionArgs);
         if (updatedRows != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
@@ -172,9 +175,9 @@ public class NotesProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
         switch (uriMatcher.match(uri)) {
             case NOTES:
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.beginTransaction();
                 int count = 0;
                 try {

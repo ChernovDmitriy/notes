@@ -7,8 +7,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView" >
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:orientation="vertical"
@@ -21,7 +20,7 @@
                 android:layout_height="wrap_content">
 
                 <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/titleText"
+                    android:id="@+id/title_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/title"
@@ -35,7 +34,7 @@
                 android:layout_height="wrap_content">
 
                 <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/descText"
+                    android:id="@+id/description_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/description"
@@ -43,35 +42,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView"
-                android:layout_gravity="center_horizontal" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/load_an_image"
-                android:id="@+id/load_image_button"
-                android:layout_gravity="left|center_horizontal"
-                android:layout_margin="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/date"
-                android:id="@+id/textView"
-                android:layout_margin="8dp" />
-
-            <DatePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/datePicker"
-                android:layout_gravity="center_horizontal"
-                android:datePickerMode="spinner"
-                android:calendarViewShown="false" />
         </LinearLayout>
     </ScrollView>
 

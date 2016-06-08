@@ -15,7 +15,22 @@ import ru.dev2dev.notes.data.NoteCursor;
 /**
  * Created by Dmitriy on 22.04.2016.
  */
-public class NoteAdapter extends RecyclerViewCursorAdapter<NoteAdapter.ViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+
+    private Cursor cursor;
+
+    public void swapCursor(Cursor cursor) {
+        this.cursor = cursor;
+        notifyDataSetChanged();
+    }
+
+    public Cursor getItem(int position) {
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.moveToPosition(position);
+        }
+        return cursor;
+    }
+
     private OnCardViewClickListener cardViewClickListener;
 
     public interface OnCardViewClickListener {
@@ -30,14 +45,12 @@ public class NoteAdapter extends RecyclerViewCursorAdapter<NoteAdapter.ViewHolde
         CardView cardView;
         TextView titleTextView;
         TextView descriptionTextView;
-        TextView dateTextView;
 
         public ViewHolder(View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.cardview);
             titleTextView = (TextView) view.findViewById(R.id.title);
             descriptionTextView = (TextView) view.findViewById(R.id.description);
-            dateTextView = (TextView) view.findViewById(R.id.date);
         }
     }
 
@@ -50,22 +63,27 @@ public class NoteAdapter extends RecyclerViewCursorAdapter<NoteAdapter.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-        NoteCursor noteCursor = new NoteCursor(cursor);
-        final Note note = noteCursor.getNote();
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        Cursor item = getItem(position);
+
+        final Note note = new NoteCursor(item).getNote();
 
         holder.titleTextView.setText(note.getTitle());
         holder.descriptionTextView.setText(note.getDescription());
-        holder.dateTextView.setText(note.getDate());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cardViewClickListener!=null) {
-                    cardViewClickListener.onCardViewClick(note);
-                }
+                cardViewClickListener.onCardViewClick(note);
             }
         });
     }
+
+    @Override
+    public int getItemCount() {
+        return cursor != null ? cursor.getCount() : 0;
+    }
+
 }
 
