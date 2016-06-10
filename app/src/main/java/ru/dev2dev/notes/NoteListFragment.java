@@ -1,5 +1,6 @@
 package ru.dev2dev.notes;
 
+import android.content.AsyncQueryHandler;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,11 +11,15 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import ru.dev2dev.notes.adapters.NoteAdapter;
+import ru.dev2dev.notes.data.NoteAsyncHandler;
+import ru.dev2dev.notes.data.NoteCursor;
+import ru.dev2dev.notes.data.NotesContract;
 import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
 public class NoteListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -43,6 +48,26 @@ public class NoteListFragment extends Fragment implements LoaderManager.LoaderCa
 
         recyclerView = (RecyclerView) view.findViewById(R.id.note_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        //added deleting by swipe
+        final NoteAsyncHandler noteAsyncHandler = new NoteAsyncHandler(getActivity().getContentResolver());
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                int position = viewHolder.getAdapterPosition();
+                Note note = new NoteCursor(adapter.getItem(position)).getNote();
+                noteAsyncHandler.delete(note);
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override

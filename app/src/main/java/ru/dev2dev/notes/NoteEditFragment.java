@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import ru.dev2dev.notes.data.NoteAsyncHandler;
 import ru.dev2dev.notes.data.NotesContract;
 import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
@@ -74,28 +75,6 @@ public class NoteEditFragment extends DialogFragment {
             noteAsyncHandler.update(note);
         } else {
             noteAsyncHandler.insert(note);
-        }
-    }
-
-    private static class NoteAsyncHandler extends AsyncQueryHandler {
-
-        public NoteAsyncHandler(ContentResolver cr) {
-            super(cr);
-        }
-
-        public void update(Note note) {
-            Uri uri = NotesContract.NoteEntry.buildNoteUri(note.getId());
-            startUpdate(0, null, uri, note.getContentValues(), null, null);
-        }
-
-        public void insert(Note note) {
-            Uri uri = NotesContract.NoteEntry.buildNotesUri();
-            startInsert(0, null, uri, note.getContentValues());
-        }
-
-        public void delete(Note note) {
-            Uri uri = NotesContract.NoteEntry.buildNoteUri(note.getId());
-            startDelete(0, null, uri, null, null);
         }
     }
 

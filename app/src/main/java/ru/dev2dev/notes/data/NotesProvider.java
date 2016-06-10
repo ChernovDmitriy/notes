@@ -42,13 +42,7 @@ public class NotesProvider extends ContentProvider {
         // проверяем Uri
         switch (uriMatcher.match(uri)) {
             case NOTES:
-                Log.d(TAG, "NOTES");
-                // если сортировка не указана, ставим свою - по имени
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = NoteEntry._ID + " ASC";
-                }
                 break;
-
             case NOTE:
                 String id = uri.getLastPathSegment();
                 Log.d(TAG, "NOTE, " + id);
