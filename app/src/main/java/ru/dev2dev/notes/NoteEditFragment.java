@@ -1,11 +1,8 @@
 package ru.dev2dev.notes;
 
 import android.app.Dialog;
-import android.content.AsyncQueryHandler;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -14,20 +11,25 @@ import android.view.View;
 import android.widget.EditText;
 
 import ru.dev2dev.notes.data.NoteAsyncHandler;
-import ru.dev2dev.notes.data.NotesContract;
 import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
 public class NoteEditFragment extends DialogFragment {
-    public static final String NOTE_EXTRA = "ru.dev2dev.notes.note_extra";
+    private static final String KEY_NOTE = "note";
 
     private Note note;
-
     private NoteAsyncHandler noteAsyncHandler;
+
+    public static NoteEditFragment newInstance(Note note) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(KEY_NOTE, note);
+        NoteEditFragment fragment = new NoteEditFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        note = (Note) getArguments().getSerializable(NOTE_EXTRA);
+        note = (Note) getArguments().getSerializable(KEY_NOTE);
         noteAsyncHandler = new NoteAsyncHandler(getActivity().getContentResolver());
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_note_edit, null);

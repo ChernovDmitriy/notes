@@ -1,6 +1,5 @@
 package ru.dev2dev.notes;
 
-import android.content.AsyncQueryHandler;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,11 +18,9 @@ import android.view.ViewGroup;
 import ru.dev2dev.notes.adapters.NoteAdapter;
 import ru.dev2dev.notes.data.NoteAsyncHandler;
 import ru.dev2dev.notes.data.NoteCursor;
-import ru.dev2dev.notes.data.NotesContract;
 import ru.dev2dev.notes.data.NotesContract.NoteEntry;
 
 public class NoteListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-
     private static final int NOTES_LOADER_ID = 1;
 
     private RecyclerView recyclerView;
@@ -123,12 +120,7 @@ public class NoteListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void openDialog(Note note) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(NoteEditFragment.NOTE_EXTRA, note);
-
-        NoteEditFragment fragment = new NoteEditFragment();
-        fragment.setArguments(bundle);
-
+        NoteEditFragment fragment = NoteEditFragment.newInstance(note);
         fragment.show(getFragmentManager(), "note");
     }
 
